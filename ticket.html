@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IT Support Ticket</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='images/psa_logo.gif') }}" 
+             alt="PSA Logo" class="logo-gif">
+    </div>
+
+    <h2>Submit IT Support Ticket</h2>
+
+    <form method="POST" class="ticket-form">
+        <input name="name" placeholder="Full Name" required>
+        <input name="email" placeholder="Email" required>
+        <input name="office" placeholder="Office / Unit">
+
+        <select name="category">
+            <option>Hardware</option>
+            <option>Software</option>
+            <option>Network</option>
+            <option>Account</option>
+        </select>
+
+        <select name="priority">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+        </select>
+
+        <textarea name="description" placeholder="Describe the issue"></textarea>
+
+        <button type="submit">Submit Ticket</button>
+    </form>
+
+    <p style="text-align:center;"><a href="/track">Track Ticket</a></p>
+
+</body>
+</html>

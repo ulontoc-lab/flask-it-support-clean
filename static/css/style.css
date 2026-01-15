@@ -1,0 +1,16 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+}
+
+input, select, textarea, button {
+    display: block;
+    margin: 10px 0;
+    padding: 8px;
+    width: 300px;
+}
+
+button {
+    width: 150px;
+    cursor: pointer;
+}

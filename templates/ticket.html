@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IT Support Ticket</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<h2>Submit IT Support Ticket</h2>
+
+<form method="POST">
+    <input name="name" placeholder="Full Name" required>
+    <input name="email" placeholder="Email" required>
+    <input name="office" placeholder="Office / Unit">
+
+    <select name="category">
+        <option>Hardware</option>
+        <option>Software</option>
+        <option>Network</option>
+        <option>Account</option>
+    </select>
+
+    <select name="priority">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+    </select>
+
+    <textarea name="description" placeholder="Describe the issue"></textarea>
+
+    <button type="submit">Submit Ticket</button>
+</form>
+
+<p><a href="/track">Track Ticket</a></p>
+</body>
+</html>

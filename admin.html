@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+</head>
+<body>
+<h2>IT Support Admin Panel</h2>
+<a href="/logout">Logout</a>
+
+<table border="1">
+<tr>
+    <th>#</th>
+    <th>Ticket ID</th>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Status</th>
+    <th>Update</th>
+</tr>
+
+{% for t in tickets %}
+<tr>
+<form method="POST">
+    <td>{{ loop.index + 1 }}</td>
+    <td>{{ t["Ticket ID"] }}</td>
+    <td>{{ t["Name"] }}</td>
+    <td>{{ t["Category"] }}</td>
+
+    <td>
+        <select name="status">
+            <option>{{ t["Status"] }}</option>
+            <option>Ongoing</option>
+            <option>Done</option>
+        </select>
+    </td>
+
+    <td>
+        <input name="assigned" placeholder="Assigned To">
+        <input name="remarks" placeholder="Remarks">
+        <input type="hidden" name="row" value="{{ loop.index + 1 }}">
+        <button>Save</button>
+    </td>
+</form>
+</tr>
+{% endfor %}
+</table>
+
+</body>
+</html>
