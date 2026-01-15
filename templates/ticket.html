@@ -1,11 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>IT Support Ticket</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <img src="/static/images/PSA_Logo_Moving.gif" alt="PSA Logo">
+
+    <img src="{{ url_for('static', filename='images/PSA_Logo_Moving.gif') }}" alt="PSA Logo">
+
     <h2>Submit IT Support Ticket</h2>
 
     <form method="POST">
@@ -31,6 +39,7 @@
         <button type="submit">Submit Ticket</button>
     </form>
 
-    <p><a href="/track">Track Ticket</a></p>
+    <p><a href="{{ url_for('track') }}">Track Ticket</a></p>
+
 </body>
 </html>
