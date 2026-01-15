@@ -1,45 +1,62 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>IT Support Ticket</title>
+<form id="ticketForm">
+    <input name="name" placeholder="Full Name" required>
+    <input name="email" placeholder="Email" required>
+    <input name="office" placeholder="Office / Unit">
 
-    <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <select name="category">
+        <option>Hardware</option>
+        <option>Software</option>
+        <option>Network</option>
+        <option>Account</option>
+    </select>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+    <select name="priority">
+        <option>Low</option>
+        <option>Medium</option>
+        <option>High</option>
+    </select>
 
-    <img src="{{ url_for('static', filename='images/PSA_Logo_Moving.gif') }}" alt="PSA Logo">
+    <textarea name="description" placeholder="Describe the issue"></textarea>
 
-    <h2>Submit IT Support Ticket</h2>
+    <button type="submit" id="submitBtn">Submit Ticket</button>
+    <p id="statusMsg"></p>
+</form>
 
-    <form method="POST">
-        <input name="name" placeholder="Full Name" required>
-        <input name="email" placeholder="Email" required>
-        <input name="office" placeholder="Office / Unit">
+<script>
+document.getElementById("ticketForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
 
-        <select name="category">
-            <option>Hardware</option>
-            <option>Software</option>
-            <option>Network</option>
-            <option>Account</option>
-        </select>
+    const btn = document.getElementById("submitBtn");
+    const msg = document.getElementById("statusMsg");
 
-        <select name="priority">
-            <option>Low</option>
-            <option>Medium</option>
-            <option>High</option>
-        </select>
+    btn.disabled = true;
+    btn.innerText = "Submitting...";
+    msg.innerText = "";
 
-        <textarea name="description" placeholder="Describe the issue"></textarea>
+    const formData = new FormData(this);
 
-        <button type="submit">Submit Ticket</button>
-    </form>
+    try {
+        const response = await fetch("/", {
+            method: "POST",
+            body: formData
+        });
 
-    <p><a href="{{ url_for('track') }}">Track Ticket</a></p>
+        const result = await response.json();
 
-</body>
-</html>
+        if (result.success) {
+            msg.style.color = "green";
+            msg.innerText = "✅ Ticket submitted successfully!";
+            this.reset();
+        } else {
+            throw new Error(result.error);
+        }
+
+    } catch (err) {
+        msg.style.color = "red";
+        msg.innerText = "❌ Failed to submit ticket.";
+    }
+
+    btn.disabled = false;
+    btn.innerText = "Submit Ticket";
+});
+</script>
