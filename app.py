@@ -7,7 +7,9 @@ import gspread
 import uuid
 from datetime import datetime
 
-app = Flask(__name__)
+# Enable template auto-reload
+app = Flask(__name__, template_folder="templates", static_folder="static")
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # -----------------------------
 # Google Sheets setup
@@ -38,13 +40,9 @@ def save_ticket_to_sheet(data):
 def submit_ticket():
     if request.method == "POST":
         try:
-            # Generate 8-character Ticket ID
             ticket_id = uuid.uuid4().hex[:8]
-
-            # Timestamp
             date_created = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-            # Row structure must match Google Sheet
             ticket_data = [
                 ticket_id,                         # Ticket ID
                 request.form.get("name"),          # Name
@@ -60,10 +58,7 @@ def submit_ticket():
                 request.form.get("email")           # Email
             ]
 
-            # Save in background thread
             Thread(target=save_ticket_to_sheet, args=(ticket_data,), daemon=True).start()
-
-            # Return Ticket ID to frontend
             return jsonify({"success": True, "ticket_id": ticket_id})
 
         except Exception as e:
@@ -85,8 +80,9 @@ def favicon():
     )
 
 # -----------------------------
-# Run app
+# Run app (Development Mode)
 # -----------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    # Enable debug=True for auto-reload of code & templates
+    app.run(host="0.0.0.0", port=port, debug=True)
