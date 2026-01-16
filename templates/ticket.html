@@ -1,62 +1,93 @@
-<form id="ticketForm">
-    <input name="name" placeholder="Full Name" required>
-    <input name="email" placeholder="Email" required>
-    <input name="office" placeholder="Office / Unit">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IT Support Ticket</title>
 
-    <select name="category">
-        <option>Hardware</option>
-        <option>Software</option>
-        <option>Network</option>
-        <option>Account</option>
-    </select>
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-    <select name="priority">
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-    </select>
+    <!-- CSS with cache busting -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ time }}">
+</head>
+<body>
 
-    <textarea name="description" placeholder="Describe the issue"></textarea>
+    <div class="logo-container" style="text-align:center; margin-bottom:20px;">
+        <img src="{{ url_for('static', filename='images/PSA_Logo_Moving.gif') }}" 
+             alt="PSA Logo" class="logo-gif" style="max-width:150px;">
+    </div>
 
-    <button type="submit" id="submitBtn">Submit Ticket</button>
-    <p id="statusMsg"></p>
-</form>
+    <h2 style="text-align:center;">Submit IT Support Ticket</h2>
 
-<script>
-document.getElementById("ticketForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
+    <!-- AJAX-enabled form -->
+    <form id="ticketForm" class="ticket-form" style="max-width:500px; margin:0 auto;">
+        <input name="name" placeholder="Full Name" required style="width:100%; margin-bottom:10px;">
+        <input name="email" placeholder="Email" required style="width:100%; margin-bottom:10px;">
+        <input name="office" placeholder="Office / Unit" style="width:100%; margin-bottom:10px;">
 
-    const btn = document.getElementById("submitBtn");
-    const msg = document.getElementById("statusMsg");
+        <select name="category" style="width:100%; margin-bottom:10px;">
+            <option>Hardware</option>
+            <option>Software</option>
+            <option>Network</option>
+            <option>Account</option>
+        </select>
 
-    btn.disabled = true;
-    btn.innerText = "Submitting...";
-    msg.innerText = "";
+        <select name="priority" style="width:100%; margin-bottom:10px;">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+        </select>
 
-    const formData = new FormData(this);
+        <textarea name="description" placeholder="Describe the issue" 
+                  style="width:100%; height:100px; margin-bottom:10px;"></textarea>
 
-    try {
-        const response = await fetch("/", {
-            method: "POST",
-            body: formData
+        <button type="submit" id="submitBtn" style="width:100%;">Submit Ticket</button>
+        <p id="statusMsg" style="text-align:center; font-weight:bold; margin-top:10px;"></p>
+    </form>
+
+    <p style="text-align:center; margin-top:15px;"><a href="/track">Track Ticket</a></p>
+
+    <!-- AJAX Script -->
+    <script>
+        const form = document.getElementById("ticketForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const statusMsg = document.getElementById("statusMsg");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
+            statusMsg.innerText = "";
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusMsg.style.color = "green";
+                    statusMsg.innerText = "✅ Ticket submitted! Ticket ID: " + result.ticket_id;
+                    form.reset();
+                } else {
+                    throw new Error(result.error || "Submission failed");
+                }
+
+            } catch (err) {
+                statusMsg.style.color = "red";
+                statusMsg.innerText = "❌ Failed to submit ticket.";
+                console.error(err);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Ticket";
         });
+    </script>
 
-        const result = await response.json();
-
-        if (result.success) {
-            msg.style.color = "green";
-            msg.innerText = "✅ Ticket submitted successfully!";
-            this.reset();
-        } else {
-            throw new Error(result.error);
-        }
-
-    } catch (err) {
-        msg.style.color = "red";
-        msg.innerText = "❌ Failed to submit ticket.";
-    }
-
-    btn.disabled = false;
-    btn.innerText = "Submit Ticket";
-});
-</script>
+</body>
+</html>
