@@ -7,44 +7,45 @@
     <!-- Favicon -->
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- CSS with cache busting -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v={{ time }}">
 </head>
 <body>
 
-    <div class="logo-container">
+    <div class="logo-container" style="text-align:center; margin-bottom:20px;">
         <img src="{{ url_for('static', filename='images/psa_logo.gif') }}" 
-             alt="PSA Logo" class="logo-gif">
+             alt="PSA Logo" class="logo-gif" style="max-width:150px;">
     </div>
 
-    <h2>Submit IT Support Ticket</h2>
+    <h2 style="text-align:center;">Submit IT Support Ticket</h2>
 
     <!-- AJAX-enabled form -->
-    <form id="ticketForm" class="ticket-form">
-        <input name="name" placeholder="Full Name" required>
-        <input name="email" placeholder="Email" required>
-        <input name="office" placeholder="Office / Unit">
+    <form id="ticketForm" class="ticket-form" style="max-width:500px; margin:0 auto;">
+        <input name="name" placeholder="Full Name" required style="width:100%; margin-bottom:10px;">
+        <input name="email" placeholder="Email" required style="width:100%; margin-bottom:10px;">
+        <input name="office" placeholder="Office / Unit" style="width:100%; margin-bottom:10px;">
 
-        <select name="category">
+        <select name="category" style="width:100%; margin-bottom:10px;">
             <option>Hardware</option>
             <option>Software</option>
             <option>Network</option>
             <option>Account</option>
         </select>
 
-        <select name="priority">
+        <select name="priority" style="width:100%; margin-bottom:10px;">
             <option>Low</option>
             <option>Medium</option>
             <option>High</option>
         </select>
 
-        <textarea name="description" placeholder="Describe the issue"></textarea>
+        <textarea name="description" placeholder="Describe the issue" 
+                  style="width:100%; height:100px; margin-bottom:10px;"></textarea>
 
-        <button type="submit" id="submitBtn">Submit Ticket</button>
-        <p id="statusMsg" style="text-align:center; font-weight:bold;"></p>
+        <button type="submit" id="submitBtn" style="width:100%;">Submit Ticket</button>
+        <p id="statusMsg" style="text-align:center; font-weight:bold; margin-top:10px;"></p>
     </form>
 
-    <p style="text-align:center;"><a href="/track">Track Ticket</a></p>
+    <p style="text-align:center; margin-top:15px;"><a href="/track">Track Ticket</a></p>
 
     <!-- AJAX Script -->
     <script>
