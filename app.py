@@ -4,6 +4,8 @@ import base64
 from threading import Thread
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import gspread
+import uuid
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -36,19 +38,35 @@ def save_ticket_to_sheet(data):
 def submit_ticket():
     if request.method == "POST":
         try:
+            # Generate unique Ticket ID (8-character short UUID)
+            ticket_id = uuid.uuid4().hex[:8]
+
+            # Timestamp for Date Created
+            date_created = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+            # Google Sheets row in correct order:
+            # Ticket ID | Name | Office | Category | Priority | Description |
+            # Status | Assigned To | Remarks | Date Created | Last Updated | Email
             ticket_data = [
-                request.form.get("name"),
-                request.form.get("email"),
-                request.form.get("office"),
-                request.form.get("category"),
-                request.form.get("priority"),
-                request.form.get("description")
+                ticket_id,                         # Ticket ID
+                request.form.get("name"),          # Name
+                request.form.get("office"),        # Office
+                request.form.get("category"),      # Category
+                request.form.get("priority"),      # Priority
+                request.form.get("description"),   # Description
+                "New",                             # Status
+                "",                                 # Assigned To
+                "",                                 # Remarks
+                date_created,                       # Date Created
+                "",                                 # Last Updated
+                request.form.get("email")           # Email
             ]
 
-            # Run Google Sheets write in background
+            # Save in background thread to keep UI instant
             Thread(target=save_ticket_to_sheet, args=(ticket_data,), daemon=True).start()
 
-            return jsonify({"success": True})
+            # Return Ticket ID to frontend
+            return jsonify({"success": True, "ticket_id": ticket_id})
 
         except Exception as e:
             print("❌ Submit error:", e)
