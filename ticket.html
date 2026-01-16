@@ -1,7 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>IT Support Ticket</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -13,7 +19,8 @@
 
     <h2>Submit IT Support Ticket</h2>
 
-    <form method="POST" class="ticket-form">
+    <!-- AJAX-enabled Form -->
+    <form id="ticketForm" class="ticket-form">
         <input name="name" placeholder="Full Name" required>
         <input name="email" placeholder="Email" required>
         <input name="office" placeholder="Office / Unit">
@@ -33,10 +40,53 @@
 
         <textarea name="description" placeholder="Describe the issue"></textarea>
 
-        <button type="submit">Submit Ticket</button>
+        <button type="submit" id="submitBtn">Submit Ticket</button>
+        <p id="statusMsg" style="text-align:center; font-weight:bold;"></p>
     </form>
 
     <p style="text-align:center;"><a href="/track">Track Ticket</a></p>
+
+    <!-- AJAX Script -->
+    <script>
+        const form = document.getElementById("ticketForm");
+        const submitBtn = document.getElementById("submitBtn");
+        const statusMsg = document.getElementById("statusMsg");
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
+            statusMsg.innerText = "";
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch("/", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    statusMsg.style.color = "green";
+                    statusMsg.innerText = "✅ Ticket submitted! Ticket ID: " + result.ticket_id;
+                    form.reset();
+                } else {
+                    throw new Error(result.error || "Submission failed");
+                }
+
+            } catch (err) {
+                statusMsg.style.color = "red";
+                statusMsg.innerText = "❌ Failed to submit ticket.";
+                console.error(err);
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit Ticket";
+        });
+    </script>
 
 </body>
 </html>
