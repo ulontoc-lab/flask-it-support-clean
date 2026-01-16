@@ -38,15 +38,13 @@ def save_ticket_to_sheet(data):
 def submit_ticket():
     if request.method == "POST":
         try:
-            # Generate unique Ticket ID (8-character short UUID)
+            # Generate 8-character Ticket ID
             ticket_id = uuid.uuid4().hex[:8]
 
-            # Timestamp for Date Created
+            # Timestamp
             date_created = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-            # Google Sheets row in correct order:
-            # Ticket ID | Name | Office | Category | Priority | Description |
-            # Status | Assigned To | Remarks | Date Created | Last Updated | Email
+            # Row structure must match Google Sheet
             ticket_data = [
                 ticket_id,                         # Ticket ID
                 request.form.get("name"),          # Name
@@ -62,7 +60,7 @@ def submit_ticket():
                 request.form.get("email")           # Email
             ]
 
-            # Save in background thread to keep UI instant
+            # Save in background thread
             Thread(target=save_ticket_to_sheet, args=(ticket_data,), daemon=True).start()
 
             # Return Ticket ID to frontend
@@ -78,9 +76,6 @@ def submit_ticket():
 def track_ticket():
     return "<h3>Tracking page coming soon!</h3>"
 
-# -----------------------------
-# Favicon route (optional but clean)
-# -----------------------------
 @app.route("/favicon.ico")
 def favicon():
     return send_from_directory(
